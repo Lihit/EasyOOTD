@@ -1,0 +1,22 @@
+noise_scheduler_kwargs:
+  num_train_timesteps: 1000
+  beta_start: 0.00085
+  beta_end: 0.012
+  beta_schedule: "linear"
+  steps_offset: 1
+  clip_sample: false
+
+## diffusion model ##
+base_model_path: './checkpoints/majicMIX_realistic_v6'
+vae_model_path: './checkpoints/sd-vae-ft-mse'
+controlnet_path: './checkpoints/control_v11p_sd15_openpose'
+image_encoder_path: './checkpoints/ip_adapter/models/image_encoder'
+ip_adapter_path: './checkpoints/ip_adapter/models/ip-adapter-plus_sd15.bin'
+ootd_adapter_path: "./checkpoints/easy_ootd/easy_ootd_adapter.pth"
+lcm_lora_path: "./checkpoints/easy_ootd/easy_ootd_lcm_lora.safetensors"
+
+## preprocess model ##
+det_model_path: "./checkpoints/preprocess/yolox_l.onnx"
+pose_model_path: "./checkpoints/preprocess/dw-ll_ucoco_384.onnx"
+parsing_lip_path: "./checkpoints/preprocess/checkpoints/humanparsing/parsing_lip.onnx"
+parsing_atr_path: "./checkpoints/preprocess/checkpoints/humanparsing/parsing_atr.onnx"
