@@ -18,5 +18,5 @@ lcm_lora_path: "./checkpoints/easy_ootd/easy_ootd_lcm_lora.safetensors"
 ## preprocess model ##
 det_model_path: "./checkpoints/preprocess/yolox_l.onnx"
 pose_model_path: "./checkpoints/preprocess/dw-ll_ucoco_384.onnx"
-parsing_lip_path: "./checkpoints/preprocess/checkpoints/humanparsing/parsing_lip.onnx"
-parsing_atr_path: "./checkpoints/preprocess/checkpoints/humanparsing/parsing_atr.onnx"
+sam_model_path: "./checkpoints/preprocess/sam_hq_vit_tiny.pth"
+sam_model_type: "vit_tiny"

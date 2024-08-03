@@ -1,6 +1,3 @@
-torch
-torchvision
-torchaudio
 diffusers==0.25.1
 einops
 gradio
@@ -10,6 +7,5 @@ accelerate
 omegaconf
 peft
 opencv-python
-onnxruntime-gpu
 onnx
 segment-anything-hq

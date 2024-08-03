@@ -32,9 +32,8 @@ from PIL import Image
 from omegaconf import OmegaConf
 
 example_path = os.path.join(os.path.dirname(__file__), 'assets/app_examples')
-
-sam_checkpoint = "./checkpoints/preprocess/sam_hq_vit_tiny.pth"
-model_type = "vit_tiny"
+cfg_path = "configs/inference.yaml"
+cfg = OmegaConf.load(cfg_path)
 
 weight_dtype = torch.float16
 
@@ -46,16 +45,13 @@ else:
     device = torch.device("cpu")
 
 print(f"device:{device}")
-sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
+sam = sam_model_registry[cfg.sam_model_type](checkpoint=cfg.sam_model_path)
 sam.to(device=device)
 sam.eval()
 predictor = SamPredictor(sam)
 
-yolox_model = YoloxDetModel(model_path="./checkpoints/preprocess/yolox_l.onnx")
-pose_model = DWPoseModel(model_path="./checkpoints/preprocess/dw-ll_ucoco_384.onnx")
-
-cfg_path = "configs/inference.yaml"
-cfg = OmegaConf.load(cfg_path)
+yolox_model = YoloxDetModel(model_path=cfg.det_model_path)
+pose_model = DWPoseModel(model_path=cfg.pose_model_path)
 
 # unet
 unet = UNet2DReferenceModel.from_pretrained(
@@ -494,7 +490,7 @@ def draw_arms(keypoints, height, width):
         np.uint16).tolist(), 'white', 30, 'curve')
 
     if height > 512:
-        im_arms = cv2.dilate(np.float32(im_arms), np.ones((10, 10), np.uint16), iterations=5)
+        im_arms = cv2.dilate(np.float32(im_arms), np.ones((9, 9), np.uint16), iterations=3)
     return im_arms.astype(np.uint8)
 
 
@@ -559,7 +555,7 @@ def draw_chests(keypoints, height, width):
     neck = 2 * neck1 / 3 + keypoints[0, :2] / 3
     mask = get_bounding_rectangle_mask(height, width, lshou_, rshou_, neck)
     if height > 512:
-        mask = cv2.dilate(np.float32(mask), np.ones((10, 10), np.uint16), iterations=3)
+        mask = cv2.dilate(np.float32(mask), np.ones((9, 9), np.uint16), iterations=3)
     return mask.astype(np.uint8)
 
 
