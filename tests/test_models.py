@@ -111,7 +111,7 @@ def test_hq_sam_model():
     sam_checkpoint = "./checkpoints/preprocess/sam_hq_vit_tiny.pth"
     model_type = "vit_tiny"
 
-    weight_dtype = torch.float16
+    weight_dtype = torch.float32
 
     if torch.backends.mps.is_available():
         device = torch.device("mps")
@@ -124,22 +124,26 @@ def test_hq_sam_model():
     sam.to(device=device, dtype=weight_dtype)
     sam.eval()
     predictor = SamPredictor(sam)
-    img_path = "assets/app_examples/garments/img_3.png"
+    img_path = "assets/app_examples/models/img_5.png"
     image = cv2.imread(img_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     predictor.set_image(image)
     h, w = image.shape[:2]
 
     input_box = np.array([[0, 0, w, h]])
-    input_point, input_label = None, None
+    input_point, input_label = np.array([[w//2, h//2]]), np.array([1])
 
     masks, scores, logits = predictor.predict(
         point_coords=input_point,
         point_labels=input_label,
-        box=input_box,
+        box=None,
         multimask_output=False,
         hq_token_only=False,
     )
+    mask = masks[0]
+    image[mask] = 0
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    cv2.imwrite("results/test2.png", image)
     pdb.set_trace()
 
 

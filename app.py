@@ -205,6 +205,12 @@ def sam_predict(point_coords, point_labels, features, interm_features, input_siz
 def update_model_info(model_img_path):
     global model_img_g, model_points_g, model_plabels_g, model_img_new, model_sam_features_g, model_sam_interm_features_g, \
         model_sam_original_size, model_sam_input_size, model_sam_mask_g, model_img_path_g
+    if model_img_path is None:
+        model_img_g = None
+        model_points_g = []
+        model_plabels_g = []
+        model_sam_features_g, model_sam_interm_features_g, model_sam_original_size, model_sam_input_size = None, None, None, None
+        return
     if not model_img_path.endswith(".webp") and model_img_path != model_img_path_g:
         model_img = Image.open(model_img_path)
         model_img_g = model_img.copy()
@@ -300,11 +306,6 @@ def get_points_with_draw_on_model(image, label, evt: gr.SelectData):
         model_sam_interm_features_g, model_sam_original_size, model_sam_input_size, model_sam_mask_g
     if model_sam_features_g is not None:
         x, y = evt.index[0], evt.index[1]
-        point_radius, point_color = 15, (0, 255, 0) if label == "add" else (
-            255,
-            0,
-            0,
-        )
         model_points_g.append([x, y])
         model_plabels_g.append(1 if label == "add" else 0)
 
@@ -318,20 +319,14 @@ def get_points_with_draw_on_model(image, label, evt: gr.SelectData):
             masks, scores, logits = sam_predict(np.array(model_points_g)[:i + 1], np.array(model_plabels_g)[:i + 1],
                                                 model_sam_features_g,
                                                 model_sam_interm_features_g,
-                                                model_sam_original_size,
                                                 model_sam_input_size,
+                                                model_sam_original_size,
                                                 masks_in, None)
             prev_mask = logits[np.argmax(scores)]
-        # masks, scores, logits = sam_predict(np.array(model_points_g), np.array(model_plabels_g),
-        #                                     model_sam_features_g,
-        #                                     model_sam_interm_features_g,
-        #                                     model_sam_original_size,
-        #                                     model_sam_input_size,
-        #                                     None, None)
         mask = masks[0].copy()
         mask = cv2.resize(mask.astype(np.float32), (w, h))
         model_sam_mask_g = mask.copy()
-        image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=1)
+        image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=0.8)
         draw = ImageDraw.Draw(image_copy)
         for i, (x, y) in enumerate(model_points_g):
             point_radius, point_color = 15, (0, 255, 0) if model_plabels_g[i] == 1 else (255, 0, 0)
@@ -362,8 +357,8 @@ def get_points_with_draw_on_garment(image, label, evt: gr.SelectData):
             masks, scores, logits = sam_predict(np.array(garment_points_g)[:i + 1], np.array(garment_plabels_g)[:i + 1],
                                                 garment_sam_features_g,
                                                 garment_sam_interm_features_g,
-                                                garment_sam_original_size,
                                                 garment_sam_input_size,
+                                                garment_sam_original_size,
                                                 masks_in, None)
             prev_mask = logits[np.argmax(scores)]
         # masks, scores, logits = sam_predict(np.array(garment_points_g), np.array(garment_plabels_g),
@@ -375,7 +370,7 @@ def get_points_with_draw_on_garment(image, label, evt: gr.SelectData):
         mask = masks[0].copy()
         mask = cv2.resize(mask.astype(np.float32), (w, h))
         garment_sam_mask_g = mask.copy()
-        image_copy = blend_with_mask(image_copy, 1 - mask, blend_color=(128, 128, 128), blend_alpha=1)
+        image_copy = blend_with_mask(image_copy, 1 - mask, blend_color=(128, 128, 128), blend_alpha=0.8)
         draw = ImageDraw.Draw(image_copy)
         for i, (x, y) in enumerate(garment_points_g):
             point_radius, point_color = 15, (0, 255, 0) if garment_plabels_g[i] == 1 else (255, 0, 0)
@@ -405,20 +400,14 @@ def undo_draw_on_model(image):
             masks, scores, logits = sam_predict(np.array(model_points_g)[:i + 1], np.array(model_plabels_g)[:i + 1],
                                                 model_sam_features_g,
                                                 model_sam_interm_features_g,
-                                                model_sam_original_size,
                                                 model_sam_input_size,
+                                                model_sam_original_size,
                                                 masks_in, None)
             prev_mask = logits[np.argmax(scores)]
-        # masks, scores, logits = sam_predict(np.array(model_points_g), np.array(model_plabels_g),
-        #                                     model_sam_features_g,
-        #                                     model_sam_interm_features_g,
-        #                                     model_sam_original_size,
-        #                                     model_sam_input_size,
-        #                                     None, None)
         mask = masks[0].copy()
         mask = cv2.resize(mask.astype(np.float32), (w, h))
         model_sam_mask_g = mask.copy()
-        image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=1)
+        image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=0.8)
         draw = ImageDraw.Draw(image_copy)
         for i, (x, y) in enumerate(model_points_g):
             point_radius, point_color = 15, (0, 255, 0) if model_plabels_g[i] == 1 else (255, 0, 0)
@@ -459,20 +448,14 @@ def undo_draw_on_garment(image):
             masks, scores, logits = sam_predict(np.array(garment_points_g)[:i + 1], np.array(garment_plabels_g)[:i + 1],
                                                 garment_sam_features_g,
                                                 garment_sam_interm_features_g,
-                                                garment_sam_original_size,
                                                 garment_sam_input_size,
+                                                garment_sam_original_size,
                                                 masks_in, None)
             prev_mask = logits[np.argmax(scores)]
-        # masks, scores, logits = sam_predict(np.array(garment_points_g), np.array(garment_plabels_g),
-        #                                     garment_sam_features_g,
-        #                                     garment_sam_interm_features_g,
-        #                                     garment_sam_original_size,
-        #                                     garment_sam_input_size,
-        #                                     None, None)
         mask = masks[0].copy()
         mask = cv2.resize(mask.astype(np.float32), (w, h))
         garment_sam_mask_g = mask.copy()
-        image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=1)
+        image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=0.8)
         draw = ImageDraw.Draw(image_copy)
         for i, (x, y) in enumerate(garment_points_g):
             point_radius, point_color = 15, (0, 255, 0) if garment_plabels_g[i] == 1 else (255, 0, 0)
@@ -732,7 +715,7 @@ def process_cond_image(pose_img):
     return img_draw, keypoints2d[0]
 
 
-def run_outfit(n_steps, guide_scale, seed, short_size, category, dress_type, use_lcm):
+def run_outfit(n_steps, guide_scale, seed, short_size, category, dress_type, use_lcm, use_pose_detect):
     global model_img_g, model_sam_mask_g, garment_img_g, garment_sam_mask_g, pose_img_g
 
     assert model_img_g is not None and garment_img_g is not None
@@ -749,7 +732,11 @@ def run_outfit(n_steps, guide_scale, seed, short_size, category, dress_type, use
     else:
         pose_img = np.array(pose_img_g)
     pose_img = cv2.resize(pose_img, (w, h))
-    pose_img_pil, keypoints2d = process_cond_image(pose_img)
+    if use_pose_detect:
+        pose_img_pil, keypoints2d = process_cond_image(pose_img)
+    else:
+        pose_img_pil = Image.fromarray(pose_img)
+        keypoints2d = None
 
     ## 处理 garment image
     garment_img = np.array(garment_img_g)
@@ -758,7 +745,7 @@ def run_outfit(n_steps, guide_scale, seed, short_size, category, dress_type, use
 
     ## 处理 model image
     model_mask = (model_sam_mask_g * 255).astype(np.uint8)
-    if pose_img_g is not None:
+    if pose_img_g is not None or keypoints2d is None:
         det_bbox = yolox_model.predict(model_img)
         if len(det_bbox) == 0:
             return None
@@ -817,8 +804,9 @@ def run_app():
                         ["add", "remove"],
                         value="add",
                         interactive=True,
-                        label="add or remove point for SAM"
+                        label="SAM point prompts"
                     )
+                with gr.Row():
                     model_undo = gr.Button(value="undo")
                     model_clear = gr.Button(value="clear")
 
@@ -843,8 +831,9 @@ def run_app():
                         ["add", "remove"],
                         value="add",
                         interactive=True,
-                        label="add or remove point for SAM"
+                        label="SAM point prompts"
                     )
+                with gr.Row():
                     garment_undo = gr.Button(value="undo")
                     garment_clear = gr.Button(value="clear")
 
@@ -866,23 +855,27 @@ def run_app():
                 with gr.Row():
                     cond_img = gr.Image(label="姿态(Pose)", sources=['upload'], type="filepath", height=384,
                                         value=None)
-                    cond_img.change(update_pose_info, inputs=cond_img)
                 with gr.Row():
-                    result_gallery = gr.Gallery(label='Output', show_label=True,
-                                                allow_preview=True, interactive=False, type='pil')
+                    use_pose_detect = gr.Checkbox(label="use pose estimation",
+                                                  info="Uncheck if you upload skeleton image",
+                                                  value=True)
+                with gr.Row():
+                    result_gallery = gr.Gallery(label='Output', show_label=True, allow_preview=True, format="png")
+                cond_img.change(update_pose_info, inputs=cond_img)
 
         with gr.Column():
             run_button = gr.Button(value="Run")
             n_steps = gr.Slider(label="Steps", minimum=1, maximum=25, value=20, interactive=True, step=1)
             guide_scale = gr.Slider(label="Guidance scale", minimum=1.0, maximum=5.0, value=2.0, interactive=True,
                                     step=0.1)
-            seed = gr.Slider(label="Seed", minimum=-1, maximum=2147483647, step=1, interactive=True, value=191026)
+            seed = gr.Slider(label="Seed", minimum=-1, maximum=2147483647, step=1, interactive=True, value=1026)
             short_size = gr.Slider(label="Short Size", minimum=512, maximum=1024, value=512, interactive=True,
                                    step=32)
             use_lcm = gr.Checkbox(label="use lcm lora", info="set cfg=1.0 and steps=4 if using lcm", value=False)
             use_lcm.change(update_lcm, inputs=[use_lcm])
 
-        run_button.click(run_outfit, inputs=[n_steps, guide_scale, seed, short_size, category, dress_type, use_lcm],
+        run_button.click(run_outfit, inputs=[n_steps, guide_scale, seed, short_size, category, dress_type, use_lcm,
+                                             use_pose_detect],
                          outputs=result_gallery)
 
     block.launch(server_name='127.0.0.1', server_port=7865)
