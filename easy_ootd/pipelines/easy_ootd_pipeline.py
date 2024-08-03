@@ -612,7 +612,7 @@ class EasyOOTDPipeline(DiffusionPipeline, LoraLoaderMixin):
         self.torch_dtype = self.unet.dtype
         callback = kwargs.pop("callback", None)
         callback_steps = kwargs.pop("callback_steps", None)
-
+        use_lcm = kwargs.get("use_lcm", True)
         if callback is not None:
             deprecate(
                 "callback",
@@ -821,7 +821,8 @@ class EasyOOTDPipeline(DiffusionPipeline, LoraLoaderMixin):
             for i, t in enumerate(timesteps):
                 # 1. Forward reference image
                 if i == 0:
-                    self.unet.unload_lora_weights()
+                    if use_lcm:
+                        self.unet.unload_lora_weights()
                     self.unet(
                         human_ref_latents,
                         torch.zeros_like(t),
@@ -836,7 +837,8 @@ class EasyOOTDPipeline(DiffusionPipeline, LoraLoaderMixin):
                         added_cond_kwargs={"image_embeds": cloth_ip_embeds},
                         return_dict=False,
                     )
-                    self.unet.load_lora_weights(self.lcm_lora_path)
+                    if use_lcm:
+                        self.unet.load_lora_weights(self.lcm_lora_path)
                 latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
                 latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 

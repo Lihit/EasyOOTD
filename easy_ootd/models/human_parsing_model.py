@@ -9,7 +9,7 @@ import torch
 import torch.nn.functional as F
 
 
-def _box2cs(box, input_size):
+def _box2cs(box, input_size, rescale=1.0):
     """This encodes bbox(x,y,w,h) into (center, scale)
 
     Args:
@@ -34,7 +34,7 @@ def _box2cs(box, input_size):
     # pixel std is 200.0
     scale = np.array([w, h], dtype=np.float32)
 
-    scale = scale * 1.0
+    scale = scale * rescale
 
     return center, scale
 
