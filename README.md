@@ -12,7 +12,7 @@
 **If you find this project useful, please give it a star✨✨**
 
 ### Demo
-<video src="https://github.com/user-attachments/assets/716d61a7-41ae-483a-874d-ea1bf345bd1a" controls="controls" width="500" height="300">Your browser does not support playing this video!</video>
+<video src="https://github.com/user-attachments/assets/082ec10c-aa6a-4931-8229-ade11f3a8e2e" controls="controls" width="500" height="300">Your browser does not support playing this video!</video>
 
 ### Model Structure
 <img src="assets/introductions/model.jpg" alt="Model Structure" width="768" height="500">
@@ -20,6 +20,7 @@
 ### How to Use
 * Environment Setup
   * Install Python environment, you can use [conda](https://github.com/conda-forge/miniforge): `conda create -n easy_ootd python=3.10`, then `conda activate easy_ootd`
+  * `pip install -e .`
   * If you have a GPU:
     * `conda install pytorch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 pytorch-cuda=12.1 -c pytorch -c nvidia`
     * `pip install onnxruntime-gpu`
@@ -31,7 +32,7 @@
 * Model Download: `bash scripts/download_models.sh`
 * Run: `python app.py`, open webpage: `http://127.0.0.1:7865/`
 * Tutorial:
-<video src="https://github.com/user-attachments/assets/716d61a7-41ae-483a-874d-ea1bf345bd1a" controls="controls" width="500" height="300">Your browser does not support playing this video!</video>
+<video src="https://github.com/user-attachments/assets/fe472102-7b0e-4f35-9292-b442a203ff09" controls="controls" width="500" height="300">Your browser does not support playing this video!</video>
 
 ### About Me
 Feel free to follow my video channel, where I will continuously share AIGC content I create. For collaboration inquiries, please send a private message.

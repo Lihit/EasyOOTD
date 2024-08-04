@@ -12,7 +12,7 @@
 **如果你觉得这个项目有用，帮我点个star吧✨✨**
 
 ### Demo
-<video src="https://github.com/user-attachments/assets/716d61a7-41ae-483a-874d-ea1bf345bd1a" controls="controls" width="500" height="300">您的浏览器不支持播放该视频！</video>
+<video src="https://github.com/user-attachments/assets/082ec10c-aa6a-4931-8229-ade11f3a8e2e" controls="controls" width="500" height="300">您的浏览器不支持播放该视频！</video>
 
 ### 模型结构
 <img src="assets/introductions/model.jpg" alt="视频号" width="768" height="500">
@@ -20,6 +20,7 @@
 ### 如何使用
 * 环境安装
   * 安装python环境，可以使用[conda](https://github.com/conda-forge/miniforge)安装：`conda create -n easy_ootd python=3.10`, 然后`conda activate easy_ootd`
+  * `pip install -e .`
   * 如果有GPU:
     * `conda install pytorch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 pytorch-cuda=12.1 -c pytorch -c nvidia`
     * `pip install onnxruntime-gpu`
@@ -31,7 +32,7 @@
 * 模型下载: `bash scripts/download_models.sh`
 * 运行: `python app.py`, 打开网页: `http://127.0.0.1:7865/`
 * 使用教程：
-<video src="https://github.com/user-attachments/assets/716d61a7-41ae-483a-874d-ea1bf345bd1a" controls="controls" width="500" height="300">您的浏览器不支持播放该视频！</video>
+<video src="https://github.com/user-attachments/assets/fe472102-7b0e-4f35-9292-b442a203ff09" controls="controls" width="500" height="300">您的浏览器不支持播放该视频！</video>
 
 
 ### 关于我

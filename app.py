@@ -325,7 +325,7 @@ def get_points_with_draw_on_model(image, label, evt: gr.SelectData):
         image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=0.8)
         draw = ImageDraw.Draw(image_copy)
         for i, (x, y) in enumerate(model_points_g):
-            point_radius, point_color = 15, (0, 255, 0) if model_plabels_g[i] == 1 else (255, 0, 0)
+            point_radius, point_color = 10, (0, 255, 0) if model_plabels_g[i] == 1 else (255, 0, 0)
             draw.ellipse(
                 [(x - point_radius, y - point_radius), (x + point_radius, y + point_radius)],
                 fill=point_color,
@@ -369,7 +369,7 @@ def get_points_with_draw_on_garment(image, label, evt: gr.SelectData):
         image_copy = blend_with_mask(image_copy, 1 - mask, blend_color=(128, 128, 128), blend_alpha=0.8)
         draw = ImageDraw.Draw(image_copy)
         for i, (x, y) in enumerate(garment_points_g):
-            point_radius, point_color = 15, (0, 255, 0) if garment_plabels_g[i] == 1 else (255, 0, 0)
+            point_radius, point_color = 10, (0, 255, 0) if garment_plabels_g[i] == 1 else (255, 0, 0)
             draw.ellipse(
                 [(x - point_radius, y - point_radius), (x + point_radius, y + point_radius)],
                 fill=point_color,
@@ -406,7 +406,7 @@ def undo_draw_on_model(image):
         image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=0.8)
         draw = ImageDraw.Draw(image_copy)
         for i, (x, y) in enumerate(model_points_g):
-            point_radius, point_color = 15, (0, 255, 0) if model_plabels_g[i] == 1 else (255, 0, 0)
+            point_radius, point_color = 10, (0, 255, 0) if model_plabels_g[i] == 1 else (255, 0, 0)
             draw.ellipse(
                 [(x - point_radius, y - point_radius), (x + point_radius, y + point_radius)],
                 fill=point_color,
@@ -454,7 +454,7 @@ def undo_draw_on_garment(image):
         image_copy = blend_with_mask(image_copy, mask, blend_color=(128, 128, 128), blend_alpha=0.8)
         draw = ImageDraw.Draw(image_copy)
         for i, (x, y) in enumerate(garment_points_g):
-            point_radius, point_color = 15, (0, 255, 0) if garment_plabels_g[i] == 1 else (255, 0, 0)
+            point_radius, point_color = 10, (0, 255, 0) if garment_plabels_g[i] == 1 else (255, 0, 0)
             draw.ellipse(
                 [(x - point_radius, y - point_radius), (x + point_radius, y + point_radius)],
                 fill=point_color,
