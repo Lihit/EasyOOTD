@@ -1,4 +1,6 @@
 ## EasyOOTD: 姿态可控的虚拟穿衣
+<a href="README.md">English</a> | <a href="README_CN.md">中文</a>
+
 ### EasyOOTD的特色
 * 基于SD1.5模型新增了一个Adapter实现虚拟穿衣, 大小只有198 MB，可适配不同的基座模型。
 * 无缝接入预训练好的ControlNet,可以实现姿态可控的虚拟穿衣。
@@ -7,8 +9,10 @@
 
 **注意：该项目是出于兴趣爱好在业余时间完成，因为只增加了一个Adapter，所以模型的能力有其局限性，如果你将它直接应用到产品，你将自己承担风险**
 
+**如果你觉得这个项目有用，帮我点个star吧✨✨**
+
 ### 模型结构
-<img src="assets/introductions/model.jpg" alt="视频号" width="768" height="490">
+<img src="assets/introductions/model.jpg" alt="视频号" width="768" height="500">
 
 ### 如何使用
 * 环境安装

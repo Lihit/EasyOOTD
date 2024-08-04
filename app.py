@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Author  : shaoguowen
+# @Author  : wenshao
 # @Email   : wenshaoguo1026@gmail.com
 # @Project : EasyOOTD
 # @FileName: app.py

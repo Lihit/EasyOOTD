@@ -38,20 +38,6 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 logger = logging.get_logger(__name__)
 
 
-def tensor2vid(video: torch.Tensor, processor, output_type="np"):
-    # Based on:
-    # https://github.com/modelscope/modelscope/blob/1509fdb973e5871f37148a4b5e5964cafd43e64d/modelscope/pipelines/multi_modal/text_to_video_synthesis_pipeline.py#L78
-
-    batch_size, channels, num_frames, height, width = video.shape
-    outputs = []
-    for batch_idx in range(batch_size):
-        batch_vid = video[batch_idx].permute(1, 0, 2, 3)
-        batch_output = processor.postprocess(batch_vid, output_type)
-
-        outputs.append(batch_output)
-    return outputs
-
-
 def retrieve_timesteps(
         scheduler,
         num_inference_steps: Optional[int] = None,
