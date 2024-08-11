@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Author  : wenshao
-# @Email   : wenshaoguo1026@gmail.com
-# @Project : EasyOOTD
-# @FileName: test_models.py
+
 import os
 import pdb
 

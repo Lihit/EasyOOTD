@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Author  : wenshao
-# @Email   : wenshaoguo1026@gmail.com
-# @Project : OutfitAnyone
-# @FileName: unet_2d_reference.py
+
 import pdb
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union

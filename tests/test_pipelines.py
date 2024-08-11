@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-# @Author  : wenshao
-# @Email   : wenshaoguo1026@gmail.com
-# @Project : EasyOOTD
-# @FileName: test_pipelines.py
 import pdb
 import time
 

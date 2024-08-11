@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-# @Author  : wenshao
-# @Email   : wenshaoguo1026@gmail.com
-# @Project : EasyOOTD
-# @FileName: easy_ootd_pipeline.py
 
 import inspect
 import pdb

@@ -18,6 +18,7 @@ import cv2
 from easy_ootd.models.yolox_det_model import YoloxDetModel
 from easy_ootd.models.dwpose_model import DWPoseModel
 from easy_ootd.common.draw import draw_pose_v2
+from easy_ootd.common.utils import align_pose
 from easy_ootd.models.unet_2d_reference import UNet2DReferenceModel
 from easy_ootd.pipelines.easy_ootd_pipeline import EasyOOTDPipeline
 from transformers import CLIPTextModel, CLIPTokenizer, CLIPVisionModelWithProjection
@@ -698,14 +699,15 @@ def process_garment_image(garment_img, garment_mask, target_h, target_w):
     return garment_img, garment_mask_ret
 
 
-def process_cond_image(pose_img):
+def process_cond_image(pose_img, keypoints2d=None):
     H, W = pose_img.shape[:2]
-    det_bbox = yolox_model.predict(pose_img)
-    if len(det_bbox) == 0:
-        return None
-    # select one
-    det_bbox = det_bbox[:1]
-    keypoints2d = pose_model.predict(pose_img, det_bbox)
+    if keypoints2d is None:
+        det_bbox = yolox_model.predict(pose_img)
+        if len(det_bbox) == 0:
+            return None
+        # select one
+        det_bbox = det_bbox[:1]
+        keypoints2d = pose_model.predict(pose_img, det_bbox)
     img_draw = draw_pose_v2(keypoints2d, H, W, ref_w=720)
     img_draw = Image.fromarray(img_draw)
     return img_draw, keypoints2d[0]
@@ -722,18 +724,6 @@ def run_outfit(n_steps, guide_scale, seed, short_size, category, dress_type, use
     h, w = int(org_h * scale), int(org_w * scale)
     model_img = cv2.resize(model_img, (w, h))
 
-    ## 处理 cond image
-    if pose_img_g is None:
-        pose_img = model_img.copy()
-    else:
-        pose_img = np.array(pose_img_g)
-    pose_img = cv2.resize(pose_img, (w, h))
-    if use_pose_detect:
-        pose_img_pil, keypoints2d = process_cond_image(pose_img)
-    else:
-        pose_img_pil = Image.fromarray(pose_img)
-        keypoints2d = None
-
     ## 处理 garment image
     garment_img = np.array(garment_img_g)
     garment_mask = (garment_sam_mask_g * 255).astype(np.uint8)
@@ -741,14 +731,35 @@ def run_outfit(n_steps, guide_scale, seed, short_size, category, dress_type, use
 
     ## 处理 model image
     model_mask = (model_sam_mask_g * 255).astype(np.uint8)
-    if pose_img_g is not None or keypoints2d is None:
-        det_bbox = yolox_model.predict(model_img)
-        if len(det_bbox) == 0:
-            return None
-        # select one
-        det_bbox = det_bbox[:1]
-        keypoints2d = pose_model.predict(model_img, det_bbox)[0]
-    model_img_pil = process_model_image(model_img, model_mask, garment_mask, keypoints2d, h, w, dress_type, category)
+    det_bbox = yolox_model.predict(model_img)
+    if len(det_bbox) == 0:
+        return None
+    # select one
+    det_bbox = det_bbox[:1]
+    model_kpts2d = pose_model.predict(model_img, det_bbox)[0]
+    model_img_pil = process_model_image(model_img, model_mask, garment_mask, model_kpts2d, h, w, dress_type, category)
+
+    ## 处理 cond image
+    if pose_img_g is None:
+        pose_img = model_img.copy()
+    else:
+        pose_img = np.array(pose_img_g)
+    pose_img = cv2.resize(pose_img, (w, h))
+    if use_pose_detect:
+        if pose_img_g is not None:
+            det_bbox = yolox_model.predict(pose_img)
+            if len(det_bbox) == 0:
+                return None
+            # select one
+            det_bbox = det_bbox[:1]
+            pose_kpts2d = pose_model.predict(pose_img, det_bbox)[0]
+            # simple pose align
+            pose_kpts2d = align_pose(pose_kpts2d, model_kpts2d)
+        else:
+            pose_kpts2d = model_kpts2d.copy()
+        pose_img_pil, pose_kpts2d = process_cond_image(pose_img, pose_kpts2d[None])
+    else:
+        pose_img_pil = Image.fromarray(pose_img)
 
     generator = torch.Generator(device=device).manual_seed(seed)
 
